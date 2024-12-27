@@ -12,6 +12,9 @@ template*
 template/
 *.otf
 *.ttf
+!example*.otf
+!example*.ttf
+
 
 *.7z
 *.zip
