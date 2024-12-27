@@ -1,0 +1,17 @@
+.vscode/
+.venv/
+.gradio/
+__pycache__/
+
+outputs/
+compressed/
+output.pdf
+
+test.py
+template*
+template/
+*.otf
+*.ttf
+
+*.7z
+*.zip
