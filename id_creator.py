@@ -1,11 +1,12 @@
 from PIL import Image, ImageDraw, ImageFont
+from PIL.ImageFile import ImageFile
 
 import constants as c
 import face_processor
 
 
 # Format the phone number into two groups of 5 digits
-def format_phone_number(phone):
+def format_phone_number(phone: str):
     pphone = phone.strip().replace(" ", "")
 
     if len(pphone) != 10 or not pphone.isdigit():
@@ -15,23 +16,33 @@ def format_phone_number(phone):
 
 
 # Validate name and post for basic correctness
-def validate_text(name, post):
+def validate_text(name: str, post: str):
     pname = name.strip()
     ppost = post.strip()
 
     if not pname:
-        return False, "Name cannot be empty."
-    elif not len(pname.split()) == 2:
-        return False, "Name must be in the format '{First-Name} {Last-Name}'."
+        return (False, "Name cannot be empty.")
+    elif not 2 <= len(pname.split()) <= 3:
+        return (
+            False,
+            "Name must be in the format '{First-Name} {Middle-Name*} {Last-Name}'.\n"
+            " * [Middle-Name] is optional",
+        )
     if not ppost:
-        return False, "Post cannot be empty."
-    
+        return (False, "Post cannot be empty.")
+
     return True, (pname.title(), ppost.title())
 
 
 # Generate ID card with given image and applicant details
 def generate_id_card(
-    person_image, target_face_size, face_num, force_image, name, phone, post
+    person_image: ImageFile,
+    target_face_size: float,
+    face_num: int,
+    force_image: bool,
+    name: str,
+    phone: str,
+    post: str,
 ):
     # Validate name and post
     valid_text, text_result = validate_text(name, post)
@@ -113,7 +124,10 @@ def generate_id_card(
         spacing=16,
     )
 
-    colon_position = (text_position[0] + max_headings_width + c.PADDING_HEADING, text_position[1])
+    colon_position = (
+        text_position[0] + max_headings_width + c.PADDING_HEADING,
+        text_position[1],
+    )
 
     # Add the colons
     draw.text(
