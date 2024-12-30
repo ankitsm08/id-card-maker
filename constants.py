@@ -21,7 +21,7 @@ IMAGES_OUTPUT_PATH = "outputs/"
 #* Constants for PDF generation
 
 IMAGE_RATIO = (3.75, 5)  # Width and height of the image in UNIT
-IMAGE_EXTENSION = os.path.splitext(TEMPLATE_PATH)[1]  # Extension of the original output image files
+IMAGE_EXTENSION = os.path.splitext(TEMPLATE_PATH)[1][1:]  # Extension of the original output image files
 
 SHEET_RATIO = (12, 18)  # Width and height of the sheet in UNIT
 
