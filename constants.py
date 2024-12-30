@@ -49,6 +49,6 @@ COMPRESSED_DIR = "compressed/"
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Create directories if they don't exist
-for path in [IMAGES_DIR, OUTPUT_PDF, COMPRESSED_DIR]:
+for path in [IMAGES_DIR, COMPRESSED_DIR]:
     if not os.path.exists(path):
         os.makedirs(path)
