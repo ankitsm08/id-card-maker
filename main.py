@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 import constants as c
 import id_creator
+import pdf_gen
 
 
 # Extracts details from output image filenames into a dataframe
@@ -95,6 +96,10 @@ def regenerate_all_id_cards():
     return "All ID cards regenerated successfully!"
 
 
+def get_filename_from_df(sl_num):
+    return get_id_card_details()[1][sl_num - 1][4]
+
+
 # * Gradio Interface
 with gr.Blocks(title="ID Card Station") as demo:
     with gr.Tabs() as tabs:
@@ -160,13 +165,13 @@ with gr.Blocks(title="ID Card Station") as demo:
 
                 # Function to the id generator with initial checks
                 def handle_generate(
-                    person_image,
-                    target_face_size,
-                    face_num,
-                    force_image,
-                    name,
-                    phone,
-                    post,
+                    person_image: gr.Image,
+                    target_face_size: float,
+                    face_num: int,
+                    force_image: bool,
+                    name: str,
+                    phone: str,
+                    post: str,
                 ):
 
                     if person_image is None:
@@ -255,18 +260,16 @@ with gr.Blocks(title="ID Card Station") as demo:
                 outputs=[list_view, alert2],
             )
             see_photo_button.click(
-                fn=lambda sl_num: display_id_photo(
-                    get_id_card_details()[1][sl_num - 1][4]
-                ),
+                fn=lambda sl_num: display_id_photo(get_filename_from_df(sl_num)),
                 inputs=id_num_selected,
                 outputs=photo_preview,
             )
 
-            def edit(num_to_edit):
+            def edit(sl_num):
                 id_cards_df = get_id_card_details()[1]
                 return (
-                    *id_cards_df[num_to_edit - 1][1:4],
-                    display_id_photo(num_to_edit, id_cards_df),
+                    *id_cards_df[sl_num - 1][1:4],
+                    display_id_photo(get_filename_from_df(sl_num)),
                     gr.Tabs(selected=0),
                 )
 
@@ -299,8 +302,6 @@ with gr.Blocks(title="ID Card Station") as demo:
                 inputs=[],
                 outputs=[download_btn],
             )
-
-            import pdf_gen
 
             print_button.click(
                 fn=lambda: (
