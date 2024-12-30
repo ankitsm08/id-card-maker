@@ -21,10 +21,18 @@ def get_id_card_details():
     for idx, fp in enumerate(file_paths, start=1):
         # Extract details from the filename
         parts = fp.replace("ID_Card_", "").replace(".png", "").split("_")
+        
         # name _ mobile _ post
-        name = parts[0] + " " + parts[1]
-        mobile = parts[2]
-        post = " ".join(parts[3:])
+        if id_creator.format_phone_number(parts[3])[0]:
+            # Name has middle name
+            name = parts[0] + " " + parts[1] + " " + parts[2]
+            mobile = parts[3]
+            post = " ".join(parts[4:])
+        else:
+            # Name doesn't have middle name
+            name = parts[0] + " " + parts[1]
+            mobile = parts[2]
+            post = " ".join(parts[3:])
 
         id_cards_df.append([idx, name, mobile, post, fp])
 
@@ -311,10 +319,12 @@ with gr.Blocks(title="ID Card Station") as demo:
                 outputs=[status, download_btn],
             )
 
-print(" Ctrl+Click the URL: http://localhost:7860")
 
-_, local_url, _ = demo.launch(share=False, inbrowser=True, quiet=True, server_port=7860)
+if __name__ == "__main__":
+    print(" Ctrl+Click the URL: http://localhost:7860")
+    
+    _, local_url, _ = demo.launch(share=False, inbrowser=True, quiet=True, server_port=7860)
 
-print(" [!] Webserver is terminated.")
+    print(" [!] Webserver is terminated.")
 
-sys.exit(0)
+    sys.exit(0)
