@@ -13,11 +13,12 @@ face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml"
 )
 
+
 # Calculate the hash of the image to use as a key in the cache
 def calculate_image_hash(image_path: str) -> str:
     with open(image_path, "rb") as f:
         image_data = f.read()
-    
+
     # Calculate the MD5 hash of the image data
     return hashlib.md5(image_data).hexdigest()
 
@@ -41,7 +42,9 @@ def crop_to_square(image: ImageFile) -> ImageFile:
 
 
 # Detect the face in the image and crop it so the face occupies the target_face_size in a square output
-def crop_face_to_square(image: ImageFile, target_face_size: float, face_num: int) -> tuple[ImageFile, str]:
+def crop_face_to_square(
+    image: ImageFile, target_face_size: float, face_num: int
+) -> tuple[ImageFile, str]:
 
     # Generate a unique hash for the image
     image_hash = calculate_image_hash(image.filename)
@@ -60,7 +63,7 @@ def crop_face_to_square(image: ImageFile, target_face_size: float, face_num: int
         faces = face_cascade.detectMultiScale(
             gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 50)
         )
-        
+
         face_cache[image_hash] = faces
 
     if len(faces) == 0:
@@ -80,10 +83,8 @@ def crop_face_to_square(image: ImageFile, target_face_size: float, face_num: int
     desired_crop_size = int(max(w, h) / target_face_size)
 
     # Make the crop area square while ensuring it fits the image
-    half_square_crop_size = (
-        min(desired_crop_size, *image_cv.shape[:2]) // 2
-    )
-    
+    half_square_crop_size = min(desired_crop_size, *image_cv.shape[:2]) // 2
+
     # Calculate the crop coordinates
     left = max(face_center_x - half_square_crop_size, 0)
     top = max(face_center_y - half_square_crop_size, 0)
@@ -98,5 +99,5 @@ def crop_face_to_square(image: ImageFile, target_face_size: float, face_num: int
 
     # Ensuring square output
     square_img_pil = crop_to_square(img_pil)
-    
+
     return square_img_pil, "Face detected and cropped successfully."

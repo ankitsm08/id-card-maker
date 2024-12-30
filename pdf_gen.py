@@ -37,7 +37,7 @@ def render_pdf():
     i, j = 0, 0
 
     for image_path in tqdm(image_file_paths, desc="Adding images", unit="image(s) "):
-        
+
         # Compress image before embedding in pdf
         compressed_image_path = compress_image(os.path.join(c.IMAGES_DIR, image_path))
 
